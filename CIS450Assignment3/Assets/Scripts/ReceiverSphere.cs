@@ -46,7 +46,7 @@ public class ReceiverSphere : MonoBehaviour, IReceiver
         }
 
         //gameObject.GetComponent<Material>().SetColor(0 , color);
-        mR.material.SetColor(0, color);
+        mR.material.SetColor("Test_Material", color);
 
         transform.localScale = new Vector3(currentScale, currentScale, currentScale);
         Debug.Log(currentScale + " " + color);
