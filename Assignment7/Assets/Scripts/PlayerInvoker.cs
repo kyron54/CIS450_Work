@@ -46,7 +46,7 @@ public class PlayerInvoker : MonoBehaviour
             colorNum = 2;
         }
 
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (commandHistory.Count != 0)
             {

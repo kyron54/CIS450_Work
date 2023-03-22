@@ -7,13 +7,16 @@ public class DrawLines : MonoBehaviour
 {
     private new Camera camera;
 
+    public GameObject newObject;
+
     public Material lineMaterial;
     public float lineWidth;
     public float depth = 5f;
+    private List<GameObject> lineList = new List<GameObject>();
 
     private Vector3? lineStartPoint = null;
 
-    private GameObject lastGameObject;
+    public GameObject lastGameObject;
     private LineRenderer lineRenderer;
 
     private void Start()
@@ -25,6 +28,18 @@ public class DrawLines : MonoBehaviour
     private void Update()
     {
         //DrawLine(Color.blue);
+        if (lineList != null)
+        {
+            lastGameObject = lineList[lineList.Count - 1];
+        }
+
+        for(int i = 0; i < lineList.Count; i++)
+        {
+            if(lineList[i] == null)
+            {
+                lineList.RemoveAt(i);
+            }
+        }
     }
 
     private Vector3 GetMouseCameraPoint()
@@ -47,28 +62,21 @@ public class DrawLines : MonoBehaviour
                 return;
             }
             var lineEndpoint = GetMouseCameraPoint();
-            if (color == Color.red)
-            {
-                var gameObject = new GameObject("red line");
-            }
 
-            if (color == Color.blue)
-            {
-                var gameObject = new GameObject("blue line");
-            }
-            //var lineRenderer = gameObject.AddComponent<LineRenderer>();
-            lineRenderer.material = lineMaterial;
-            lineRenderer.startColor = color;
-            lineRenderer.endColor = color;
-            lineRenderer.SetPositions(new Vector3[] { lineStartPoint.Value, lineEndpoint });
-            lineRenderer.startWidth = lineWidth;
-            lineRenderer.endWidth = lineWidth;
+                 var lineObject = new GameObject("line");
+                //Instantiate(newObject, gameObject.transform);
 
+                var lineRenderer = lineObject.AddComponent<LineRenderer>();
+                lineRenderer.material = lineMaterial;
+                lineRenderer.startColor = color;
+                lineRenderer.endColor = color;
+                lineRenderer.SetPositions(new Vector3[] { lineStartPoint.Value, lineEndpoint });
+                lineRenderer.startWidth = lineWidth;
+                lineRenderer.endWidth = lineWidth;
 
             lineStartPoint = null;
 
-            lastGameObject = gameObject;
-
+            lineList.Add(lineObject);
         }
     }
 

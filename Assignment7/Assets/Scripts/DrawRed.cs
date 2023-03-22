@@ -32,6 +32,6 @@ public class DrawRed : Command
 
     public void DestroyLastObject()
     {
-        GameObject.Destroy(drawLines.GetLastLine());
+        GameObject.Destroy(lineHistory.Peek());
     }
 }
