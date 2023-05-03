@@ -33,14 +33,6 @@ public class ContainerComposite : EnemyComponent
 
     }
 
-    private void IterateWithForEach(List<EnemyComponent> enemyComponents)
-    {
-        foreach (EnemyComponent enemyComponent in enemyComponents)
-        {
-            enemyComponent.PrintDescription();
-        }
-    }
-
     private void IterateWithIEnumerator(IEnumerable<EnemyComponent> enemyComponents)
     {
         IEnumerator<EnemyComponent> enumerator = enemyComponents.GetEnumerator();
