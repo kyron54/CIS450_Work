@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5a34b6605d7e1c643a2a5169d7719837
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - enemies: {instanceID: 0}
+  - zombie: {instanceID: 0}
+  - skeleton: {instanceID: 0}
+  - slime: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
