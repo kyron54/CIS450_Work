@@ -1826,6 +1826,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 8001026884534061332, guid: 204712cc0eb708d4ea0c7d35a5e59214, type: 3}
+      propertyPath: speed
+      value: 12.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8001026884534061332, guid: 204712cc0eb708d4ea0c7d35a5e59214, type: 3}
       propertyPath: grappleForce
       value: 300
       objectReference: {fileID: 0}
@@ -1889,5 +1893,9 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 6d1e9c018739bdc46b9ada89d10b008d, type: 2}
+    - target: {fileID: 8001026884534061339, guid: 204712cc0eb708d4ea0c7d35a5e59214, type: 3}
+      propertyPath: m_AngularDrag
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 204712cc0eb708d4ea0c7d35a5e59214, type: 3}
