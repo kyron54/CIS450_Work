@@ -8,7 +8,9 @@ public class PlayerController : MonoBehaviour
     public float sensitivity = 10f;
     public float maxYAngle = 80f;
     private Vector2 currentRotation;
+    public bool canGrapple = false;
     Camera cam;
+    LineRenderer lineRenderer;
 
     //Weapon variables
     public ParticleSystem muzzleFlash;
@@ -17,34 +19,81 @@ public class PlayerController : MonoBehaviour
     public float hitForce = 10f;
     public GameObject bullet;
     public GameObject transformPos;
+    public GroundCheck gc;
+    public float grappleDistance = 10f;
+    public float grappleForce = 400;
+    RaycastHit grappleHit;
+    Vector3 grapplePos;
+    
+    private Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
-        cam = GetComponentInChildren<Camera>(); 
+        cam = GetComponentInChildren<Camera>();
+        rb = GetComponent<Rigidbody>();
+        Cursor.lockState = CursorLockMode.Locked;
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Movement();
-        RotateCamera();
+        DetectGrappleDistance();
 
         if (Input.GetButtonDown("Fire1"))
         {
             Shoot();
         }
 
-        Cursor.lockState = CursorLockMode.Locked;
+        if (Input.GetButtonDown("Jump"))
+        {
+            if(gc.isOnGround)
+            rb.AddForce(Vector3.up * 5f, ForceMode.Impulse);
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Grapple();
+        }
+        else
+        {
+            rb.useGravity = true;
+        }
+
+        if(Input.GetMouseButton(1))
+        {
+            rb.AddForce((grapplePos - transform.position) * grappleForce * Time.deltaTime);
+            lineRenderer.enabled = true;
+        }
+        else
+        {
+            //SSgrapplePos = transform.position;
+            lineRenderer.enabled = false;
+        }
+        lineRenderer.SetPosition(0, transformPos.transform.position);
+    }
+
+    private void FixedUpdate()
+    {
+        Movement();
+    }
+
+    private void LateUpdate()
+    {
+        RotateCamera();
     }
 
     void Movement()
     {
-        float moveX = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
+        float moveX = Input.GetAxis("Horizontal") * speed * Time.fixedDeltaTime;
 
-        float moveZ = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+        float moveZ = Input.GetAxis("Vertical") * speed * Time.fixedDeltaTime;
 
-        transform.Translate(moveX , 0f, moveZ);
+        rb.AddForce(transform.forward.normalized * moveZ, ForceMode.Impulse);
+
+        rb.AddForce(transform.right.normalized * moveX, ForceMode.Impulse);
+
     }
 
     void RotateCamera()
@@ -53,9 +102,10 @@ public class PlayerController : MonoBehaviour
         currentRotation.y -= Input.GetAxis("Mouse Y") * sensitivity;
         currentRotation.x = Mathf.Repeat(currentRotation.x, 360);
         currentRotation.y = Mathf.Clamp(currentRotation.y, -maxYAngle, maxYAngle);
-        cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
 
         gameObject.transform.rotation = Quaternion.Euler(0, currentRotation.x, 0);
+
+        cam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
     }
 
     void Shoot()
@@ -74,7 +124,10 @@ public class PlayerController : MonoBehaviour
             {
                 //Instantiate(bullet, transformPos.transform);
                 target.SpawnBullet(hitInfo.point, cam.transform.rotation);
-                target.TakeDamage(damage);
+                if (target.CompareTag("Enemy"))
+                {
+                    target.TakeDamage(damage);
+                }
             }
 
             //If the shot hits a Rigidbody, apply a force
@@ -86,6 +139,37 @@ public class PlayerController : MonoBehaviour
 
         //At the beginning of the Shoot() method, play the particle effect
         muzzleFlash.Play();
+    }
+
+    void Grapple()
+    {
+
+        if(canGrapple)
+        {
+            rb.useGravity = false;
+            //rb.AddForce((grappleHit.point - transform.position) * 200f * Time.deltaTime);
+            grapplePos = grappleHit.point;
+            lineRenderer.SetPosition(1, grappleHit.point);
+            Debug.Log("Grapple point: " + grappleHit.point);
+        }
+        else
+        {
+            rb.useGravity = true;
+            lineRenderer.enabled = false;
+        }
+    }
+
+    void DetectGrappleDistance()
+    {
+
+        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out grappleHit, grappleDistance))
+        {
+            canGrapple = true;
+        }
+        else
+        {
+            canGrapple = false;
+        }
     }
 
 }
